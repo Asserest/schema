@@ -1,0 +1,53 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://asserest.github.io/json-schema/base.json",
+    "description": "Shared base layout of Asserest configuration file",
+    "type": "object",
+    "properties": {
+        "url": {
+            "type": "string",
+            "description": "An URL address for testing can be access or not.",
+            "format": "uri"
+        },
+        "accessible": {
+            "type": "boolean",
+            "description": "Determine this URL can be access or not (after all redirection have been resolved).",
+            "default": true
+        },
+        "timeout": {
+            "type": "integer",
+            "description": "Determine when this URL assume as inaccessible in seconds later.",
+            "minimum": 10,
+            "multipleOf": 5,
+            "default": 10
+        }
+    },
+    "allOf": [
+        {
+            "if": {
+                "properties": {
+                    "accessible": {
+                        "const": true
+                    }
+                }
+            },
+            "then": {
+                "properties": {
+                    "try_count": {
+                        "type": "integer",
+                        "description": "Count of assertion until this URL can be fetched.",
+                        "minimum": 1,
+                        "default": 1
+                    }
+                },
+                "required": [
+                    "try_count"
+                ]
+            }
+        }
+    ],
+    "required": [
+        "url",
+        "accessible"
+    ]
+}

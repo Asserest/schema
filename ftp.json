@@ -1,0 +1,38 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://asserest.github.io/json-schema/ftp.json",
+    "description": "FTP exclusive configuration of Asserest configuration",
+    "type": "object",
+    "properties": {
+        "username": {
+            "description": "Username of FTP server that you want to test. ('anonymous' if this field omitted).",
+            "type": "string"
+        },
+        "security": {
+            "description": "Specify which security is used for connecting FTP server.",
+            "type": "string",
+            "enum": [
+                "FTP",
+                "FTPS",
+                "FTPES"
+            ],
+            "default": "FTP"
+        }
+    },
+    "required": [
+        "security"
+    ],
+    "if": {
+        "required": [
+            "username"
+        ]
+    },
+    "then": {
+        "properties": {
+            "password": {
+                "description": "Password of accessing FTP server. Please ensure the username IS USES FOR TESTING PURPOSE ONLY.",
+                "type": "string"
+            }
+        }
+    }
+}

@@ -1,0 +1,56 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://asserest.github.io/schema/http.json",
+    "description": "HTTP(S) exclusive configuration of Asserest configuration",
+    "type": "object",
+    "properties": {
+        "method": {
+            "type": "string",
+            "enum": [
+                "DELETE",
+                "GET",
+                "POST",
+                "HEAD",
+                "PATCH",
+                "PUT"
+            ]
+        },
+        "header": {
+            "type": "object",
+            "propertyNames": {
+                "pattern": "^([A-Z][A-Za-z]*-)*[A-Z][A-Za-z]+$"
+            },
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "body": {
+            "description": "Body that uses for making request.",
+            "type": [
+                "object",
+                "array",
+                "string"
+            ]
+        }
+    },
+    "if": {
+        "properties": {
+            "method": {
+                "enum": [
+                    "DELETE",
+                    "PATCH",
+                    "POST",
+                    "PUT"
+                ]
+            }
+        }
+    },
+    "then": {
+        "required": [
+            "body"
+        ]
+    },
+    "required": [
+        "method"
+    ]
+}
