@@ -2,6 +2,29 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://asserest.github.io/json-schema/ftp.json",
     "description": "FTP exclusive configuration of Asserest configuration",
+    "definitions": {
+        "file_props": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "type": "string"
+                    },
+                    "success": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "path",
+                    "success"
+                ],
+                "additionalProperties": false
+            },
+            "uniqueItems": true,
+            "minItems": 1
+        }
+    },
     "type": "object",
     "properties": {
         "username": {
@@ -17,6 +40,38 @@
                 "FTPES"
             ],
             "default": "FTP"
+        },
+        "file_properties": {
+            "description": "Define file path to asserting the permission of FTP server.",
+            "type": "object",
+            "properties": {
+                "read": {
+                    "$ref": "#/$defs/file_props"
+                },
+                "write": {
+                    "$ref": "#/$defs/file_props"
+                },
+                "delete": {
+                    "$ref": "#/$defs/file_props"
+                }
+            },
+            "anyOf": [
+                {
+                    "required": [
+                        "read"
+                    ]
+                },
+                {
+                    "required": [
+                        "write"
+                    ]
+                },
+                {
+                    "required": [
+                        "delete"
+                    ]
+                }
+            ]
         }
     },
     "required": [
@@ -30,7 +85,7 @@
     "then": {
         "properties": {
             "password": {
-                "description": "Password of accessing FTP server. Please ensure the username IS USES FOR TESTING PURPOSE ONLY.",
+                "description": "User's password of accessing FTP server. Please ensure the username IS USES FOR TESTING PURPOSE ONLY. Asserest is not liable for causing data leak with exposing actual account in this configuration script.",
                 "type": "string"
             }
         }
