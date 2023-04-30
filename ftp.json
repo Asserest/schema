@@ -2,30 +2,56 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://asserest.github.io/json-schema/ftp.json",
     "description": "FTP exclusive configuration of Asserest configuration",
+    "type": "object",
     "definitions": {
-        "file_props": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "path": {
-                        "type": "string"
-                    },
-                    "success": {
-                        "type": "boolean"
-                    }
+        "single_path": {
+            "type": "object",
+            "properties": {
+                "target_path": {
+                    "description": "Target path in FTP server",
+                    "type": "string",
+                    "format": "iri-reference",
+                    "pattern": "^/"
                 },
-                "required": [
-                    "path",
-                    "success"
-                ],
-                "additionalProperties": false
+                "success": {
+                    "description": "Determine the given path(s) can be opreated successfully.",
+                    "type": "boolean"
+                }
             },
-            "uniqueItems": true,
-            "minItems": 1
+            "required": [
+                "target_path",
+                "success"
+            ]
+        },
+        "write_path": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/single_path"
+                },
+                {
+                    "properties": {
+                        "source_path": {
+                            "description": "The path of local file that is going to upload to FTP server",
+                            "type": "string",
+                            "format": "iri-reference",
+                            "oneOf": [
+                                {
+                                    "pattern": "^/"
+                                },
+                                {
+                                    "pattern": "^[A-Za-z]:/"
+                                }
+                            ]
+                        }
+                    },
+                    "required": [
+                        "source_path"
+                    ]
+                }
+            ]
         }
     },
-    "type": "object",
     "properties": {
         "username": {
             "description": "Username of FTP server that you want to test. ('anonymous' if this field omitted).",
@@ -40,54 +66,81 @@
                 "FTPES"
             ],
             "default": "FTP"
-        },
-        "file_properties": {
-            "description": "Define file path to asserting the permission of FTP server.",
-            "type": "object",
-            "properties": {
-                "read": {
-                    "$ref": "#/$defs/file_props"
-                },
-                "write": {
-                    "$ref": "#/$defs/file_props"
-                },
-                "delete": {
-                    "$ref": "#/$defs/file_props"
-                }
-            },
-            "anyOf": [
-                {
-                    "required": [
-                        "read"
-                    ]
-                },
-                {
-                    "required": [
-                        "write"
-                    ]
-                },
-                {
-                    "required": [
-                        "delete"
-                    ]
-                }
-            ]
         }
     },
     "required": [
         "security"
     ],
-    "if": {
-        "required": [
-            "username"
-        ]
-    },
-    "then": {
-        "properties": {
-            "password": {
-                "description": "User's password of accessing FTP server. Please ensure the username IS USES FOR TESTING PURPOSE ONLY. Asserest is not liable for causing data leak with exposing actual account in this configuration script.",
-                "type": "string"
+    "allOf": [
+        {
+            "if": {
+                "required": [
+                    "username"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "password": {
+                        "description": "User's password of accessing FTP server. Please ensure the username IS USES FOR TESTING PURPOSE ONLY. Asserest is not liable for causing data leak with exposing actual account in this configuration script.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "accessible": {
+                        "enum": [
+                            true
+                        ]
+                    }
+                }
+            },
+            "then": {
+                "properties": {
+                    "file_properties": {
+                        "type": "object",
+                        "description": "Additions assertion for verifying file access. Ensure the tested directories and files must be for test only which becomes irrevertible if executed.\nThe execution will be followed by this order: list, read, write and delete.",
+                        "properties": {
+                            "read": {
+                                "$ref": "#/definitions/single_path"
+                            },
+                            "write": {
+                                "$ref": "#/definitions/write_path"
+                            },
+                            "delete": {
+                                "$ref": "#/definitions/single_path"
+                            },
+                            "list": {
+                                "$ref": "#/definitions/single_path"
+                            }
+                        },
+                        "anyOf": [
+                            {
+                                "required": [
+                                    "read"
+                                ]
+                            },
+                            {
+                                "required": [
+                                    "write"
+                                ]
+                            },
+                            {
+                                "required": [
+                                    "delete"
+                                ]
+                            },
+                            {
+                                "required": [
+                                    "list"
+                                ]
+                            }
+                        ]
+                    }
+                }
             }
         }
-    }
+    ]
 }
