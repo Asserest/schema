@@ -3,55 +3,6 @@
     "$id": "https://asserest.github.io/json-schema/ftp.json",
     "description": "FTP exclusive configuration of Asserest configuration",
     "type": "object",
-    "definitions": {
-        "single_path": {
-            "type": "object",
-            "properties": {
-                "target_path": {
-                    "description": "Target path in FTP server",
-                    "type": "string",
-                    "format": "iri-reference",
-                    "pattern": "^/"
-                },
-                "success": {
-                    "description": "Determine the given path(s) can be opreated successfully.",
-                    "type": "boolean"
-                }
-            },
-            "required": [
-                "target_path",
-                "success"
-            ]
-        },
-        "write_path": {
-            "type": "object",
-            "allOf": [
-                {
-                    "$ref": "#/definitions/single_path"
-                },
-                {
-                    "properties": {
-                        "source_path": {
-                            "description": "The path of local file that is going to upload to FTP server",
-                            "type": "string",
-                            "format": "iri-reference",
-                            "oneOf": [
-                                {
-                                    "pattern": "^/"
-                                },
-                                {
-                                    "pattern": "^[A-Za-z]:/"
-                                }
-                            ]
-                        }
-                    },
-                    "required": [
-                        "source_path"
-                    ]
-                }
-            ]
-        }
-    },
     "properties": {
         "username": {
             "description": "Username of FTP server that you want to test. ('anonymous' if this field omitted).",
@@ -99,45 +50,31 @@
             },
             "then": {
                 "properties": {
-                    "file_properties": {
-                        "type": "object",
-                        "description": "Additions assertion for verifying file access. Ensure the tested directories and files must be for test only which becomes irrevertible if executed.\nThe execution will be followed by this order: list, read, write and delete.",
-                        "properties": {
-                            "read": {
-                                "$ref": "#/definitions/single_path"
+                    "access": {
+                        "type": "array",
+                        "minItems": 1,
+                        "description": "Try access the given paths and determine can be accessible (granted list permission).",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "target_path": {
+                                    "description": "Target path in FTP server in absolute form.",
+                                    "type": "string",
+                                    "format": "iri-reference",
+                                    "pattern": "^/"
+                                },
+                                "success": {
+                                    "description": "Determine the given path(s) can be opreated successfully.",
+                                    "type": "boolean"
+                                }
                             },
-                            "write": {
-                                "$ref": "#/definitions/write_path"
-                            },
-                            "delete": {
-                                "$ref": "#/definitions/single_path"
-                            },
-                            "list": {
-                                "$ref": "#/definitions/single_path"
-                            }
+                            "required": [
+                                "target_path",
+                                "success"
+                            ],
+                            "additionalProperties": false
                         },
-                        "anyOf": [
-                            {
-                                "required": [
-                                    "read"
-                                ]
-                            },
-                            {
-                                "required": [
-                                    "write"
-                                ]
-                            },
-                            {
-                                "required": [
-                                    "delete"
-                                ]
-                            },
-                            {
-                                "required": [
-                                    "list"
-                                ]
-                            }
-                        ]
+                        "additionalItems": false
                     }
                 }
             }
