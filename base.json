@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://asserest.github.io/json-schema/base.json",
+    "$id": "https://asserest.github.io/schema/base.json",
     "description": "Shared base layout of Asserest configuration file",
     "type": "object",
     "properties": {

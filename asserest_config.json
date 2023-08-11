@@ -1,12 +1,12 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://asserest.github.io/json-schema/schema.json",
+    "$id": "https://asserest.github.io/schema/asserest_config.json",
     "description": "Asserest configuration script",
     "type": "array",
     "items": {
         "allOf": [
             {
-                "$ref": "https://asserest.github.io/json-schema/base.json"
+                "$ref": "https://asserest.github.io/schema/base.json"
             },
             {
                 "if": {
@@ -17,7 +17,7 @@
                     }
                 },
                 "then": {
-                    "$ref": "https://asserest.github.io/json-schema/http.json"
+                    "$ref": "https://asserest.github.io/schema/http.json"
                 }
             },
             {
@@ -29,7 +29,7 @@
                     }
                 },
                 "then": {
-                    "$ref": "https://asserest.github.io/json-schema/ftp.json"
+                    "$ref": "https://asserest.github.io/schema/ftp.json"
                 }
             }
         ]
